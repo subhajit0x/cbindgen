@@ -21,15 +21,11 @@ jobs:
       - name: Install cargo-audit
         run: cargo install cargo-audit
 
-      - name: Install cargo-sarif
-        run: cargo install --git https://github.com/psastras/cargo-sarif
+      - name: Run cargo audit and save output
+        run: cargo audit --json > audit.json
 
-      - name: Run cargo audit and output SARIF
-        run: |
-          cargo audit --json > audit.json
-          cargo sarif audit.json > audit.sarif
-      
-      - name: Upload SARIF file to Security tab
-        uses: github/codeql-action/upload-sarif@v3
+      - name: Upload audit result
+        uses: actions/upload-artifact@v3
         with:
-          sarif_file: audit.sarif
+          name: cargo-audit-result
+          path: audit.json
